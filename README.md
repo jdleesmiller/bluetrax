@@ -6,14 +6,14 @@ two programs:
 
 1. `bluetrax_scan` uses periodic inquiry mode. It returns a timestamped record
 every time a device is detected. If a device is detected many times, a record is
-returned for each detection. The program scans almost continuously, except for a
-gap of Uniform(1.28s, 2.56s) between scans, as required by the specification.
+returned for each detection. The program scans almost continuously, except for 
+a Uniform(1.28s, 2.56s) gap between scans, as required by the specification.
 
 2. `bluetrax_basic_scan` uses the higher-level HCI inquiry API. This is provided
 mainly for reference; it is probably better to use `bluetrax_scan`.
 
 These programs produce output in a packed binary format. To decode the output
-into ASCII CSV, use `bluetrax_scan_unpack` and `bluetrax_basic_view` with the
+into text (CSV), use `bluetrax_scan_unpack` and `bluetrax_basic_view` with the
 above, respectively. For example, to monitor a scan interactively run
 
     ./bluetrax_scan -u | ./bluetrax_scan_unpack
@@ -30,12 +30,15 @@ Bluetrax uses [BlueZ](http://www.bluez.org/), the official Linux Bluetooth
 protocol stack.
 
 On Debian:
+
     sudo apt-get install libbluetooth-dev
 
 On Angstrom:
+
     opkg install bluez4-dev
 
 To build, just run
+
     make
 
 License
