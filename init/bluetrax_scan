@@ -1,0 +1,54 @@
+#!/bin/sh
+
+#
+# To get something like supervision, put
+# * * * * * /etc/init.d/bluetrax_scan start
+# in your crontab. This tries to start the scanner every minute, if it is not
+# already running.
+#
+# On the BeagleBoard, it seems that sendmail doesn't exist, so adding
+# MAILTO=""
+# to the top of your crontab is also a good idea.
+#
+
+BT_ROOT=/home/root/personal/bluetrax/bluetrax
+BT_OUTPUT=$BT_ROOT/data.bin
+BT_ARGS="--file=$BT_OUTPUT --flush"
+
+DAEMON=$BT_ROOT/bluetrax_scan
+PIDFILE=/var/run/bluetrax_scan.pid
+DESC="Bluetooth Scanner"
+
+set -e
+
+do_start() {
+	/sbin/start-stop-daemon --start --name bluetrax_scan --exec $DAEMON --pidfile $PIDFILE --background --make-pidfile --oknodo -- $BT_ARGS
+}
+
+do_stop() {
+	/sbin/start-stop-daemon --stop --name bluetrax_scan --pidfile $PIDFILE
+}
+
+case "$1" in
+  start)
+	echo "Starting $DESC"
+	do_start
+	;;
+  stop)
+	echo "Stopping $DESC"
+	do_stop
+	;;
+  restart|force-reload)
+	echo "Restarting $DESC"
+	do_stop
+	sleep 1
+	do_start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
+
